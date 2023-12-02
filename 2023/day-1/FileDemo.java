@@ -21,6 +21,7 @@ public class FileDemo {
             Scanner sc = new Scanner(file);
             while (sc.hasNextLine())
                 stringPerLineList.add(sc.nextLine());
+            sc.close();
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -74,6 +75,7 @@ public class FileDemo {
             System.out.println("line: " + (i+1) + " : " + (ret - last));
 
         }
+
 
         System.out.println(ret);
     }
