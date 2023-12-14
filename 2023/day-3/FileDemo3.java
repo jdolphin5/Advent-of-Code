@@ -11,54 +11,70 @@ public class FileDemo3 {
         return false;
     }
 
-    private static boolean hasAdjacentSymbol(char[][] mat, int i, int j) {
+    private static void addAdjacentNumbersToList(char[][] mat, int i, int j, List<Integer> adjacentNumberList, Map<Integer, Integer>[] rootMap, Map<Integer, Integer>[] valueMap) {
+        Set<Integer> alreadyAdded = new HashSet<>();
+        
         if (i - 1 >= 0) {
             if (j - 1 >= 0) {
-                if (isSymbol(mat[i-1][j-1])) {
-                    return true;
+                if (Character.isDigit(mat[i-1][j-1])) {
+                    if (alreadyAdded.add(valueMap[i-1].get(rootMap[i-1].get(j-1)))) {
+                        adjacentNumberList.add(valueMap[i-1].get(rootMap[i-1].get(j-1)));
+                    }
                 }
             }
-            if (isSymbol(mat[i-1][j])) {
-                return true;
+            if (Character.isDigit(mat[i-1][j])) {
+                if (alreadyAdded.add(valueMap[i-1].get(rootMap[i-1].get(j)))) {
+                        adjacentNumberList.add(valueMap[i-1].get(rootMap[i-1].get(j)));
+                    }
             }
             if (j + 1 < mat[0].length) {
-                if (isSymbol(mat[i-1][j+1])) {
-                    return true;
+                if (Character.isDigit(mat[i-1][j+1])) {
+                    if (alreadyAdded.add(valueMap[i-1].get(rootMap[i-1].get(j+1)))) {
+                        adjacentNumberList.add(valueMap[i-1].get(rootMap[i-1].get(j+1)));
+                    }
                 }
             }
         }
         if (j - 1 >= 0) {
-            if (isSymbol(mat[i][j-1])) {
-                return true;
+            if (Character.isDigit(mat[i][j-1])) {
+                if (alreadyAdded.add(valueMap[i].get(rootMap[i].get(j-1)))) {
+                    adjacentNumberList.add(valueMap[i].get(rootMap[i].get(j-1)));
+                }
             }
         }
-        if (isSymbol(mat[i][j])) {
-            return true;
-        }
         if (j + 1 < mat[0].length) {
-            if (isSymbol(mat[i][j+1])) {
-                return true;
+            if (Character.isDigit(mat[i][j+1])) {
+                if (alreadyAdded.add(valueMap[i].get(rootMap[i].get(j+1)))) {
+                    adjacentNumberList.add(valueMap[i].get(rootMap[i].get(j+1)));
+                }
             }
         }
 
         if (i + 1 < mat.length) {
             if (j - 1 >= 0) {
-                if (isSymbol(mat[i+1][j-1])) {
-                    return true;
+                if (Character.isDigit(mat[i+1][j-1])) {
+                    if (alreadyAdded.add(valueMap[i+1].get(rootMap[i+1].get(j-1)))) {
+                        adjacentNumberList.add(valueMap[i+1].get(rootMap[i+1].get(j-1)));
+                    }
                 }
             }
-            if (isSymbol(mat[i+1][j])) {
-                return true;
+            if (Character.isDigit(mat[i+1][j])) {
+                if (alreadyAdded.add(valueMap[i+1].get(rootMap[i+1].get(j)))) {
+                    adjacentNumberList.add(valueMap[i+1].get(rootMap[i+1].get(j)));
+                }
             }
             if (j + 1 < mat[0].length) {
-                if (isSymbol(mat[i+1][j+1])) {
-                    return true;
+                if (Character.isDigit(mat[i+1][j+1])) {
+                    if (alreadyAdded.add(valueMap[i+1].get(rootMap[i+1].get(j+1)))) {
+                        adjacentNumberList.add(valueMap[i+1].get(rootMap[i+1].get(j+1)));
+                    }
                 }
             }
         }
 
-        return false;
+        //System.out.println(adjacentNumberList.toString());
     }
+
     public static void main(String[] args) {
         File file = new File("2023/day-3/input.txt");
         List<String> stringPerLineList = new ArrayList<>();
@@ -88,11 +104,12 @@ public class FileDemo3 {
 
         Map<Integer, Integer>[] rootMap = new HashMap[mat.length];
         Map<Integer, Integer>[] valueMap = new HashMap[mat.length];
-        boolean[][] isPartNumber = new boolean[mat.length][mat[0].length];
+        Map<Integer, List<Integer>>[] symbolAdjacentNumberMap = new HashMap[mat.length];
 
         for (int i = 0; i < rootMap.length; i++) {
             rootMap[i] = new HashMap<>();
             valueMap[i] = new HashMap<>();
+            symbolAdjacentNumberMap[i] = new HashMap<>();
         }
 
         for (int i = 0; i < mat.length; i++) {
@@ -106,18 +123,28 @@ public class FileDemo3 {
                         rootMap[i].put(j, rootMap[i].get(j-1));
                         valueMap[i].put(rootMap[i].get(j), (valueMap[i].get(rootMap[i].get(j)) * 10) + Character.getNumericValue(mat[i][j]));
                     }
-                    if (hasAdjacentSymbol(mat, i, j)) {
-                        isPartNumber[i][rootMap[i].get(j)] = true;
-                    }
                 }
-                
             }
         }
 
         for (int i = 0; i < mat.length; i++) {
             for (int j = 0; j < mat[0].length; j++) {
-                if (isPartNumber[i][j]) {
-                    ret += valueMap[i].get(j);
+                if (isSymbol(mat[i][j])) {
+                    List<Integer> adjacentNumberList = new ArrayList<>();
+                    addAdjacentNumbersToList(mat, i, j, adjacentNumberList, rootMap, valueMap);
+                    symbolAdjacentNumberMap[i].put(j, adjacentNumberList);
+                }
+            }
+        }
+
+        for (int i = 0; i < symbolAdjacentNumberMap.length; i++) {
+            for (Map.Entry<Integer, List<Integer>> entry : symbolAdjacentNumberMap[i].entrySet()) {
+                //int key = entry.getKey();
+                List<Integer> values = entry.getValue();
+
+                if (values.size() == 2) { //exactly 2 part numbers per gear
+                    int product = values.get(0) * values.get(1);
+                    ret += product;
                 }
             }
         }
