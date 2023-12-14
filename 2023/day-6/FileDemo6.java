@@ -5,7 +5,7 @@ public class FileDemo6 {
 
     //Hold the button for 1 millisecond at the start of the race. 
     //Then, the boat will travel at a speed of 1 millimeter per millisecond for 6 milliseconds, reaching a total distance traveled of 6 millimeters.
-    private static boolean canWin(int distance, int timeHoldingButton, int totalTime) {
+    private static boolean canWin(long distance, long timeHoldingButton, long totalTime) {
         return timeHoldingButton * (totalTime - timeHoldingButton) > distance;
     }
     public static void main(String[] args) {
@@ -21,47 +21,36 @@ public class FileDemo6 {
             System.out.println(e.toString());
         }
 
-        int[] times = new int[4];
-        int[] distances = new int[4];
 
         String[] timesString = stringPerLineList.get(0).split(": ", 0);
-        String[] timesStrings = timesString[1].split(" ", 0);
-
-        int j = 0;
-
-        for (int i = 0; i < timesStrings.length; i++) {
-            if (timesStrings[i].equals("")) continue;
-            int time = Integer.parseInt(timesStrings[i].trim());
-            times[j++] = time;
-        }
+        timesString[1] = timesString[1].replaceAll("\\s+","");
 
         String[] distancesString = stringPerLineList.get(1).split(": ", 0);
-        String[] distancesStrings = distancesString[1].split(" ", 0);
+        distancesString[1] = distancesString[1].replaceAll("\\s+","");
 
-        j = 0;
+        long time = Long.parseLong(timesString[1]);
+        long distance = Long.parseLong(distancesString[1]);
 
-        for (int i = 0; i < distancesStrings.length; i++) {
-            if (distancesStrings[i].equals("")) continue;
-            int distance = Integer.parseInt(distancesStrings[i].trim());
-            distances[j++] = distance;
-        }
+        System.out.println("time: " + time + " distance: " + distance);
 
-        int ret = 1;
+        long minTimeHold = -1;
+        long maxTimeHold = -1;
 
-        for (int i = 0; i < distances.length; i++) {
-            int ct = 0;
-
-            for (int k = 0; k <= times[i]; k++) {
-                if (canWin(distances[i], k, times[i])) {
-                    ct++;
-                }
+        for (long i = 0; i <= time; i++) {
+            if (canWin(distance, i, time)) {
+                minTimeHold = i;
+                break;
             }
-
-            ret *= ct;
         }
-        
 
-        System.out.println(ret);
+        for (long i = time; i >= 0; i--) {
+            if (canWin(distance, i, time)) {
+                maxTimeHold = i;
+                break;
+            }
+        }
+
+        System.out.println(maxTimeHold-minTimeHold+1);
     }
 }
 
