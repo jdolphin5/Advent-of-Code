@@ -16,6 +16,10 @@ public class FileDemo4 {
         }
 
         int ret = 0;
+        int[] winningsPerCard = new int[stringPerLineList.size()];
+        int[] numberOfCards = new int[stringPerLineList.size()];
+
+        Arrays.fill(numberOfCards, 1);
 
         for (int i = 0; i < stringPerLineList.size(); i++) {
             String[] strip = stringPerLineList.get(i).split(": ", 0);
@@ -39,21 +43,20 @@ public class FileDemo4 {
             }
 
             int currentCardWinnings = 0;
-            boolean firstWinning = false;
 
             for (int possibleNumber : possibleNumbersList) {
                 if (winningNumbersList.contains(possibleNumber)) {
-                    if (firstWinning) {
-                        currentCardWinnings *= 2;
-                    }
-                    else {
-                        firstWinning = true;
-                        currentCardWinnings++;
-                    }
+                    currentCardWinnings++;
                 }
             }
 
-            ret += currentCardWinnings;
+            winningsPerCard[i] = currentCardWinnings;
+
+            for (int j = i+1; j < Math.min(stringPerLineList.size(), currentCardWinnings+i+1); j++) {
+                numberOfCards[j] += numberOfCards[i];
+            }
+
+            ret += numberOfCards[i];
         }
 
         System.out.println(ret);
