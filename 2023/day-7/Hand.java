@@ -27,7 +27,7 @@ public class Hand {
         cardWeightMap.put('A', 14);
         cardWeightMap.put('K', 13);
         cardWeightMap.put('Q', 12);
-        cardWeightMap.put('J', 11);
+        cardWeightMap.put('J', 1); // part 2 - J is now 1
         cardWeightMap.put('T', 10);
         cardWeightMap.put('9', 9);
         cardWeightMap.put('8', 8);
@@ -45,9 +45,13 @@ public class Hand {
             cardCountMap.put(c, cardCountMap.getOrDefault(c, 0) + 1);
         }
 
+        int jokerCount = cardCountMap.getOrDefault('J', 0);
         List<Integer> cardCountList = new ArrayList<>(cardCountMap.values());
+        cardCountList.remove(Integer.valueOf(jokerCount));
         Collections.sort(cardCountList, Collections.reverseOrder());
-        int size = cardCountList.size();
+        if (cardCountList.size() > 0)
+            cardCountList.set(0, cardCountList.get(0) + jokerCount);
+        int size = Math.max(1, cardCountList.size());
 
         long priority = 0;
         
