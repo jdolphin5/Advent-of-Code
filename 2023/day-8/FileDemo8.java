@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.*;
+import java.math.BigInteger;
 
 public class FileDemo8 {
     public static void main(String[] args) {
@@ -18,6 +19,7 @@ public class FileDemo8 {
         String directions = stringPerLineList.get(0);
         Map<String, String> leftChoiceDestinationMap = new HashMap<>();
         Map<String, String> rightChoiceDestinationMap = new HashMap<>();
+        List<String> currentNodes = new ArrayList<>();
 
         for (int i = 2; i < stringPerLineList.size(); i++) {
             String[] splitStr = stringPerLineList.get(i).split(" = ", 0);
@@ -26,27 +28,56 @@ public class FileDemo8 {
             String rightChoice = splitStr[1].substring(6, 9);
             leftChoiceDestinationMap.put(location, leftChoice);
             rightChoiceDestinationMap.put(location, rightChoice);
+
+            if (location.charAt(2) == 'A') {
+                currentNodes.add(location);
+            }
         }
 
-        String location = "AAA";
-        String destination = "ZZZ";
+        System.out.println(currentNodes.toString());
 
-        int steps = 0;
+        List<Integer> cycles = new ArrayList<>();
 
-        while (!location.equals(destination)) {
-            int i = steps % directions.length();
-            char direction = directions.charAt(i);
+        for (int i = 0; i < currentNodes.size(); i++) {
+            int steps = 0;
+            String firstZ = "";
+            int cycleSteps = 0;
 
-            if (direction == 'L') {
-                location = leftChoiceDestinationMap.get(location);
+            while (true) {
+                if (currentNodes.get(i).charAt(2) == 'Z') {
+                    if (firstZ.equals("")) {
+                        cycleSteps = 0;
+                        firstZ = currentNodes.get(i);
+                    }
+                    else if (firstZ.equals(currentNodes.get(i))) {
+                        cycles.add(cycleSteps);
+                        break;
+                    }
+                }
+
+                if (directions.charAt(steps % directions.length()) == 'L') {
+                    currentNodes.set(i, leftChoiceDestinationMap.get(currentNodes.get(i)));
+                }
+                else {
+                    currentNodes.set(i, rightChoiceDestinationMap.get(currentNodes.get(i)));
+                }
+
+                steps++;
+                cycleSteps++;
             }
-            else {
-                location = rightChoiceDestinationMap.get(location);
-            }
-
-            steps++;
         }
 
-        System.out.println(steps);
+        System.out.println(cycles.toString());
+
+        BigInteger ret = new BigInteger(String.valueOf(cycles.get(0)));
+
+        for (int x = 1; x < cycles.size(); x++) {
+            BigInteger num = new BigInteger(String.valueOf(cycles.get(x)));
+            BigInteger gcd = ret.gcd(num);
+            BigInteger product = ret.multiply(num);
+            ret  = product.divide(gcd);
+        }
+
+        System.out.println(ret);
     }
 }
