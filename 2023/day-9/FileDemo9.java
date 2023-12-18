@@ -56,10 +56,6 @@ public class FileDemo9 {
                 
             }
 
-            List<Long> myList = bonusLines.get(bonusLines.size()-1);
-            myList.add(0, myList.get(0));
-            bonusLines.set(bonusLines.size()-1, myList);
-
             long magicNumber = -1;
 
             for (int y = bonusLines.size()-2; y >= 0; y--) {
