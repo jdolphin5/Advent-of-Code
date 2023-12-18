@@ -18,16 +18,18 @@ public class FileDemo9 {
         int ret = 0;
 
         for (int i = 0; i < stringPerLineList.size(); i++) {
-            List<List<Integer>> bonusLines = new ArrayList<>();
+            List<List<Long>> bonusLines = new ArrayList<>();
 
             String[] splitLine = stringPerLineList.get(i).split(" ", 0);
 
-            List<Integer> firstLine = new ArrayList<>();
+            List<Long> firstLine = new ArrayList<>();
 
             for (String s : splitLine) {
-                firstLine.add(Integer.parseInt(s));
+                firstLine.add(Long.parseLong(s));
             }
 
+
+            System.out.println(firstLine.toString());
             bonusLines.add(firstLine);
 
             boolean allZeros = false;
@@ -35,7 +37,7 @@ public class FileDemo9 {
 
             while (true) {
                 allZeros = true;
-                List<Integer> nextLine = new ArrayList<>();
+                List<Long> nextLine = new ArrayList<>();
 
                 for (int y = 0; y < bonusLines.get(x).size()-1; y++) {
                     if (bonusLines.get(x).get(y) != 0) {
@@ -54,16 +56,19 @@ public class FileDemo9 {
                 
             }
 
-            int magicNumber = -1;
+            List<Long> myList = bonusLines.get(bonusLines.size()-1);
+            myList.add(0, myList.get(0));
+            bonusLines.set(bonusLines.size()-1, myList);
+
+            long magicNumber = -1;
 
             for (int y = bonusLines.size()-2; y >= 0; y--) {
-                int size1 = bonusLines.get(y+1).size();
-                int size2 = bonusLines.get(y).size();
-                int magicNumber1 = bonusLines.get(y+1).get(size1-1);
-                int magicNumber2 = bonusLines.get(y).get(size2-1);
-                bonusLines.get(y).add(magicNumber1 + magicNumber2);
-                magicNumber = magicNumber1 + magicNumber2;
+                long magicNumber1 = bonusLines.get(y+1).get(0);
+                long magicNumber2 = bonusLines.get(y).get(0);
+                bonusLines.get(y).add(0, magicNumber2 - magicNumber1);
             }
+
+            magicNumber = bonusLines.get(0).get(0);
 
             System.out.println("magic number: " + magicNumber);
 
