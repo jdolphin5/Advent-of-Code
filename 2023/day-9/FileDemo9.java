@@ -15,7 +15,7 @@ public class FileDemo9 {
             System.out.println(e.toString());
         }
 
-        int ret = 0;
+        long ret = 0;
 
         for (int i = 0; i < stringPerLineList.size(); i++) {
             List<List<Long>> bonusLines = new ArrayList<>();
