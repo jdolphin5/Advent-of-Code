@@ -109,6 +109,12 @@ public class FileDemo10 {
             }
         }
 
+        List<Coordinate>[] loopCoordinates = new ArrayList[mat.length];
+
+        for (int i = 0; i < loopCoordinates.length; i++) {
+            loopCoordinates[i] = new ArrayList<>();
+        }
+
         Coordinate start = getStartCoordinate(mat);
         int stepCount = 0;
 
@@ -117,6 +123,8 @@ public class FileDemo10 {
 
         while (!nextStack.isEmpty()) {
             Coordinate x = nextStack.pop();
+            if (x.step != '-')
+                loopCoordinates[x.x].add(x);
             stepCount++;
 
             if (x.x == start.x && x.y == start.y) break;
@@ -134,6 +142,69 @@ public class FileDemo10 {
             }
         }
 
+        //Part 1 answer:
         System.out.println(stepCount/2);
+
+
+        /*
+         *  Part 2 notes from https://www.reddit.com/r/adventofcode/comments/18evyu9/2023_day_10_solutions/
+         * 
+         *  Initialize boolean variable 'inside loop' to false
+            Change state in one of the following cases:
+            a vertical bar of the loop
+            a NW loop corner if the previous was a SE loop corner
+            a SW loop corner if the previous was a NE loop corner
+            Mark a point as inside loop if the variable is true.
+         * 
+         * 
+         * On this occasion, I didn't go for the simplest solution. I used the dijkstra algo
+         * from the starting point to calculate the farthest position on the loop.
+            For part 2, you can use a scanline algorithm either vertically or horizontally.
+            First determine the type of starting position, then scan each line, reversing the 
+            inside/outside state when an edge is detected (starting with the outside).
+            A horizontal border can be the sequences '|', 'L--7', 'F--J'
+         */
+        
+        long area = 0;
+
+        for (int i = 0; i < loopCoordinates.length; i++) {// 2; i++) {//
+            boolean insideLoop = false;
+            char last = ' ';
+
+            Collections.sort(loopCoordinates[i], (a, b) -> a.y - b.y);
+
+            if (loopCoordinates[i].size() > 0) {
+                if (loopCoordinates[i].get(0).step == '|')
+                    insideLoop = true;
+                last = loopCoordinates[i].get(0).step;
+            }
+
+
+            System.out.println("i: " + i);
+            for (int j = 0; j < loopCoordinates[i].size(); j++) {
+                System.out.println("y: " + loopCoordinates[i].get(j).y + " step: " + loopCoordinates[i].get(j).step);
+            }
+
+            for (int j = 1; j < loopCoordinates[i].size(); j++) {
+                Coordinate x = loopCoordinates[i].get(j);
+
+                if (insideLoop && (x.step != 'J' && last != 'F') && (x.step != '7' && last != 'L')) {
+                    area += Math.max(0, x.y - loopCoordinates[i].get(j-1).y - 1);
+                    System.out.println("y: " + x.y + " area: " + area + " insideLoop" + insideLoop);
+                }
+
+                if (x.step == '|' || (x.step == 'J' && last == 'F') || (x.step == '7' && last == 'L'))
+                    insideLoop = !insideLoop;
+
+                last = x.step;
+            }
+
+            System.out.println("area:" + area);
+
+        }
+
+        //Part 2 answer
+        System.out.println(area);
+        
     }
 }
