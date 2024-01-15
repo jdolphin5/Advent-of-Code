@@ -26,6 +26,28 @@ public class FileDemo11 {
         }
     }
 
+    private static long calculateDist(Coordinate a, Coordinate b, List<Integer> emptyRows, List<Integer> emptyCols) {
+        long ret = 0;
+
+        final int million = 1000000;
+
+        for (int i = Math.min(a.x, b.x); i < Math.max(a.x, b.x); i++) {
+            if (emptyRows.contains(i))
+                ret += million;
+            else
+                ret++;
+        }
+
+        for (int j = Math.min(a.y, b.y); j < Math.max(a.y, b.y); j++) {
+            if (emptyCols.contains(j))
+                ret += million;
+            else
+                ret++;       
+        }
+        
+        return ret;
+    }
+
     public static void main(String[] args) {
         File file = new File("2023/day-11/input.txt");
         List<String> stringPerLineList = new ArrayList<>();
@@ -92,6 +114,10 @@ public class FileDemo11 {
             }
          }
 
+
+        /*
+         *  Part 1 Commented
+
         //expand rows
         int rowOffset = 0;
         for (int i = 0; i < mat.length; i++) {
@@ -142,5 +168,31 @@ public class FileDemo11 {
 
         System.out.println(ret);
 
+         * 
+         */
+
+         List<Coordinate> galaxyCoordinatesList = new ArrayList<>();
+
+         for (int i = 0; i < mat.length; i++) {
+             for (int j = 0; j < mat[0].length; j++) {
+                 if (mat[i][j] == '#') {
+                     galaxyCoordinatesList.add(new Coordinate(i, j));
+                 }
+             }
+         }
+
+         long ret = 0;
+
+         for (int i = 0; i < galaxyCoordinatesList.size(); i++) {
+            for (int j = i+1; j < galaxyCoordinatesList.size(); j++) {
+                Coordinate a = galaxyCoordinatesList.get(i);
+                Coordinate b = galaxyCoordinatesList.get(j);
+
+                ret += calculateDist(a, b, emptyRows, emptyCols);
+            }
+        }
+
+        //Part 2 answer
+        System.out.println(ret);
     }
 }
