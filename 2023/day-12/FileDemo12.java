@@ -3,12 +3,16 @@ import java.util.*;
 
 public class FileDemo12 {
 
-    private static long calculateOptions(List<Character> arrangementList, List<Integer> groupIntegersList, int i, int j, int k, int last, String chars) {
+    private static long calculateOptions(Long[][][][] dp, List<Character> arrangementList, List<Integer> groupIntegersList, int i, int j, int k, int last) {
         long ret = 0;
+
+        if (dp[i][j][k][last] != null) {
+            return dp[i][j][k][last];
+        }
 
         if (k == 0) {
             if (j < groupIntegersList.size() && last == groupIntegersList.get(j)) {
-                return calculateOptions(arrangementList, groupIntegersList, i, j+1, 0, 0, chars);
+                return calculateOptions(dp, arrangementList, groupIntegersList, i, j+1, 0, 0);
             }
             else if (last > 0) {
                 if (j < groupIntegersList.size() && last != groupIntegersList.get(j))
@@ -22,13 +26,12 @@ public class FileDemo12 {
 
         if (i == arrangementList.size()) {
             if (j < groupIntegersList.size() && k == groupIntegersList.get(j)) {
-                return calculateOptions(arrangementList, groupIntegersList, i, j+1, 0, 0, chars);
+                return calculateOptions(dp, arrangementList, groupIntegersList, i, j+1, 0, 0);
             }
         }
 
         if (i == arrangementList.size()) {
             if (j == groupIntegersList.size() && k == 0 && last == 0) {
-                System.out.println(chars);
                 return 1;
             }
 
@@ -36,17 +39,17 @@ public class FileDemo12 {
         }
 
         if (arrangementList.get(i) == '?') {
-            ret += calculateOptions(arrangementList, groupIntegersList, i+1, j, k+1, 0, chars + "#");
-            ret += calculateOptions(arrangementList, groupIntegersList, i+1, j, 0, k, chars + ".");
+            ret += calculateOptions(dp, arrangementList, groupIntegersList, i+1, j, k+1, 0);
+            ret += calculateOptions(dp, arrangementList, groupIntegersList, i+1, j, 0, k);
         }
         else if (arrangementList.get(i) == '#') {
-            ret += calculateOptions(arrangementList, groupIntegersList, i+1, j, k+1, 0, chars + "#");
+            ret += calculateOptions(dp, arrangementList, groupIntegersList, i+1, j, k+1, 0);
         }
         else {
-            ret += calculateOptions(arrangementList, groupIntegersList, i+1, j, 0, k,  chars + ".");
+            ret += calculateOptions(dp, arrangementList, groupIntegersList, i+1, j, 0, k);
         }
         
-        return ret;
+        return dp[i][j][k][last] = ret;
     }
     public static void main(String[] args) {
         File file = new File("2023/day-12/input.txt");
@@ -86,10 +89,34 @@ public class FileDemo12 {
                 rowGroupLists[i].add(Integer.parseInt(split2[j]));
             }
 
-            ret += calculateOptions(rowArrangementLists[i], rowGroupLists[i], 0, 0, 0, 0, "");
+            List<Character> rowArrangementListRepeated = new ArrayList<>();
+            List<Integer> rowGroupListRepeated = new ArrayList<>();
+
+            for (int x = 0; x < 5; x++) {
+
+                for (int y = 0; y < rowArrangementLists[i].size(); y++) {
+                    rowArrangementListRepeated.add(rowArrangementLists[i].get(y));
+                }
+                
+                if (x < 4)
+                    rowArrangementListRepeated.add('?');
+
+                for (int z = 0; z < rowGroupLists[i].size(); z++) {
+                    rowGroupListRepeated.add(rowGroupLists[i].get(z));
+                }
+            }
+
+            System.out.println(rowArrangementListRepeated.toString());
+
+            Long[][][][] dp = new Long[rowArrangementListRepeated.size()+1][rowGroupListRepeated.size()+1][rowArrangementListRepeated.size()+1][rowArrangementListRepeated.size()+1];
+
+            ret += calculateOptions(dp, rowArrangementListRepeated, rowGroupListRepeated, 0, 0, 0, 0);
             System.out.println(ret);
         }
 
-        System.out.println("Part 1 Answer: " + ret);
+        //Part 1 - Backtracking solution
+        //Part 2 - Memoisation / DP solution
+
+        System.out.println("Part 2 Answer: " + ret);
     }
 }
