@@ -3,7 +3,7 @@ import java.util.*;
 
 public class FileDemo14 {
     public static void main(String[] args) {
-        File file = new File("2023/day-13/input.txt");
+        File file = new File("2023/day-14/input.txt");
         List<String> stringPerLineList = new ArrayList<>();
 
         try {
