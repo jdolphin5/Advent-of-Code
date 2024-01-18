@@ -132,9 +132,12 @@ public class FileDemo16 {
             }
         }
 
-        Boolean[][][] dp = new Boolean[mat.length][mat[0].length][4];
-
         long ret = 0;
+
+        //Part 1:
+        /*        
+
+        Boolean[][][] dp = new Boolean[mat.length][mat[0].length][4];
 
         char[][] litMat = new char[mat.length][mat[0].length];
 
@@ -146,6 +149,47 @@ public class FileDemo16 {
 
         System.out.println(ret);
 
+         */
+
+        //Part 2:
+
+        for (int i = 0; i < mat.length; i++) {
+            Boolean[][][] dp = new Boolean[mat.length][mat[0].length][4];
+            char[][] litMat = new char[mat.length][mat[0].length];
+            recur(dp, mat, litMat, i, 0, 1);
+            long ans = countEnergised(litMat);
+
+            ret = Math.max(ret, ans);
+        }
+
+        for (int i = 0; i < mat.length; i++) {
+            Boolean[][][] dp = new Boolean[mat.length][mat[0].length][4];
+            char[][] litMat = new char[mat.length][mat[0].length];
+            recur(dp, mat, litMat, i, mat[0].length-1, 3);
+            long ans = countEnergised(litMat);
+
+            ret = Math.max(ret, ans);
+        }
+
+        for (int j = 0; j < mat[0].length; j++) {
+            Boolean[][][] dp = new Boolean[mat.length][mat[0].length][4];
+            char[][] litMat = new char[mat.length][mat[0].length];
+            recur(dp, mat, litMat, 0, j, 2);
+            long ans = countEnergised(litMat);
+
+            ret = Math.max(ret, ans);
+        }
+
+        for (int j = 0; j < mat[0].length; j++) {
+            Boolean[][][] dp = new Boolean[mat.length][mat[0].length][4];
+            char[][] litMat = new char[mat.length][mat[0].length];
+            recur(dp, mat, litMat, mat.length-1, j, 0);
+            long ans = countEnergised(litMat);
+
+            ret = Math.max(ret, ans);
+        }
+
+        System.out.println(ret);
     }
 
 }
