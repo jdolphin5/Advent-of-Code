@@ -1,11 +1,11 @@
-public class Coordinate {
+public class Day10Coordinate {
     int x;
     int y;
     int stepCount;
     char step;
-    Coordinate last;
+    Day10Coordinate last;
 
-    public Coordinate(int x, int y, char step, Coordinate last) {
+    public Day10Coordinate(int x, int y, char step, Day10Coordinate last) {
         this.x = x;
         this.y = y;
         this.step = step;

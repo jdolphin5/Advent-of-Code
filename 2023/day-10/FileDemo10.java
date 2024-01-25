@@ -2,19 +2,19 @@ import java.io.*;
 import java.util.*;
 
 public class FileDemo10 {
-    private static Coordinate getStartCoordinate(char[][] mat) {
+    private static Day10Coordinate getStartCoordinate(char[][] mat) {
         for (int i = 0; i < mat.length; i++) {
             for (int j = 0; j < mat[0].length; j++) {
                 if (mat[i][j] == 'S')
-                    return new Coordinate(i, j, 'S', new Coordinate(-1, -1, 'X', null));
+                    return new Day10Coordinate(i, j, 'S', new Day10Coordinate(-1, -1, 'X', null));
             }
         }
 
-        return new Coordinate(0, 0, 'S', null);
+        return new Day10Coordinate(0, 0, 'S', null);
     }
 
-    private static List<Coordinate> getNextSteps(Coordinate currentCoordinate, char[][] matrix) {
-        List<Coordinate> result = new ArrayList<>();
+    private static List<Day10Coordinate> getNextSteps(Day10Coordinate currentCoordinate, char[][] matrix) {
+        List<Day10Coordinate> result = new ArrayList<>();
     
         int currentX = currentCoordinate.x;
         int currentY = currentCoordinate.y;
@@ -23,55 +23,55 @@ public class FileDemo10 {
         switch (currentChar) {
             case 'F':
                 if (isValidCoordinate(currentX + 1, currentY, matrix)) {
-                    result.add(new Coordinate(currentX + 1, currentY, matrix[currentX + 1][currentY], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX + 1, currentY, matrix[currentX + 1][currentY], currentCoordinate));
                 }
                 if (isValidCoordinate(currentX, currentY + 1, matrix)) {
-                    result.add(new Coordinate(currentX, currentY + 1, matrix[currentX][currentY + 1], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX, currentY + 1, matrix[currentX][currentY + 1], currentCoordinate));
                 }
                 break;
     
             case 'J':
                 if (isValidCoordinate(currentX - 1, currentY, matrix)) {
-                    result.add(new Coordinate(currentX - 1, currentY, matrix[currentX - 1][currentY], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX - 1, currentY, matrix[currentX - 1][currentY], currentCoordinate));
                 }
                 if (isValidCoordinate(currentX, currentY - 1, matrix)) {
-                    result.add(new Coordinate(currentX, currentY - 1, matrix[currentX][currentY - 1], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX, currentY - 1, matrix[currentX][currentY - 1], currentCoordinate));
                 }
                 break;
     
             case 'L':
                 if (isValidCoordinate(currentX - 1, currentY, matrix)) {
-                    result.add(new Coordinate(currentX - 1, currentY, matrix[currentX - 1][currentY], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX - 1, currentY, matrix[currentX - 1][currentY], currentCoordinate));
                 }
                 if (isValidCoordinate(currentX, currentY + 1, matrix)) {
-                    result.add(new Coordinate(currentX, currentY + 1, matrix[currentX][currentY + 1], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX, currentY + 1, matrix[currentX][currentY + 1], currentCoordinate));
                 }
                 break;
     
             case '7':
                 if (isValidCoordinate(currentX + 1, currentY, matrix)) {
-                    result.add(new Coordinate(currentX + 1, currentY, matrix[currentX + 1][currentY], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX + 1, currentY, matrix[currentX + 1][currentY], currentCoordinate));
                 }
                 if (isValidCoordinate(currentX, currentY - 1, matrix)) {
-                    result.add(new Coordinate(currentX, currentY - 1, matrix[currentX][currentY - 1], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX, currentY - 1, matrix[currentX][currentY - 1], currentCoordinate));
                 }
                 break;
     
             case '|':
                 if (isValidCoordinate(currentX - 1, currentY, matrix)) {
-                    result.add(new Coordinate(currentX - 1, currentY, matrix[currentX - 1][currentY], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX - 1, currentY, matrix[currentX - 1][currentY], currentCoordinate));
                 }
                 if (isValidCoordinate(currentX + 1, currentY, matrix)) {
-                    result.add(new Coordinate(currentX + 1, currentY, matrix[currentX + 1][currentY], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX + 1, currentY, matrix[currentX + 1][currentY], currentCoordinate));
                 }
                 break;
     
             case '-':
                 if (isValidCoordinate(currentX, currentY - 1, matrix)) {
-                    result.add(new Coordinate(currentX, currentY - 1, matrix[currentX][currentY - 1], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX, currentY - 1, matrix[currentX][currentY - 1], currentCoordinate));
                 }
                 if (isValidCoordinate(currentX, currentY + 1, matrix)) {
-                    result.add(new Coordinate(currentX, currentY + 1, matrix[currentX][currentY + 1], currentCoordinate));
+                    result.add(new Day10Coordinate(currentX, currentY + 1, matrix[currentX][currentY + 1], currentCoordinate));
                 }
                 break;
     
@@ -109,29 +109,29 @@ public class FileDemo10 {
             }
         }
 
-        List<Coordinate>[] loopCoordinates = new ArrayList[mat.length];
+        List<Day10Coordinate>[] loopCoordinates = new ArrayList[mat.length];
 
         for (int i = 0; i < loopCoordinates.length; i++) {
             loopCoordinates[i] = new ArrayList<>();
         }
 
-        Coordinate start = getStartCoordinate(mat);
+        Day10Coordinate start = getStartCoordinate(mat);
         int stepCount = 0;
 
-        Stack<Coordinate> nextStack = new Stack<>();
-        nextStack.push(new Coordinate(start.x+1, start.y, mat[start.x+1][start.y], start));
+        Stack<Day10Coordinate> nextStack = new Stack<>();
+        nextStack.push(new Day10Coordinate(start.x+1, start.y, mat[start.x+1][start.y], start));
 
         while (!nextStack.isEmpty()) {
-            Coordinate x = nextStack.pop();
+            Day10Coordinate x = nextStack.pop();
             if (x.step != '-')
                 loopCoordinates[x.x].add(x);
             stepCount++;
 
             if (x.x == start.x && x.y == start.y) break;
 
-            List<Coordinate> getNextSteps = getNextSteps(x, mat);
+            List<Day10Coordinate> getNextSteps = getNextSteps(x, mat);
 
-            for (Coordinate y : getNextSteps) {
+            for (Day10Coordinate y : getNextSteps) {
                 if (x.last.x != y.x || x.last.y != y.y) {
                     nextStack.push(y);
                     System.out.println("stepCount" + stepCount);
@@ -186,7 +186,7 @@ public class FileDemo10 {
             }
 
             for (int j = 1; j < loopCoordinates[i].size(); j++) {
-                Coordinate x = loopCoordinates[i].get(j);
+                Day10Coordinate x = loopCoordinates[i].get(j);
 
                 if (insideLoop && (x.step != 'J' && last != 'F') && (x.step != '7' && last != 'L')) {
                     area += Math.max(0, x.y - loopCoordinates[i].get(j-1).y - 1);
