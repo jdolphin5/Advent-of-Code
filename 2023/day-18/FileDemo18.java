@@ -3,6 +3,8 @@ import java.util.*;
 
 public class FileDemo18 {
 
+    /*
+
     private static char getCornerValue(String[][] mat2, int x, int y) {
         char ret = '&';
 
@@ -139,6 +141,8 @@ public class FileDemo18 {
         return x >= 0 && x < matrix.length && y >= 0 && y < matrix[0].length;
     }
 
+    */
+
     public static void main(String[] args) {
         File file = new File("2023/day-18/input.txt");
         List<String> stringPerLineList = new ArrayList<>();
@@ -151,6 +155,8 @@ public class FileDemo18 {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+
+        /*
         
         String[][] mat = new String[10000][10000];
         int i = 500;
@@ -189,8 +195,6 @@ public class FileDemo18 {
                     break;
                 default:
             }
-
-            //System.out.println("i: " + i + " j: " + j);
         }
 
         int minY = Integer.MAX_VALUE;
@@ -223,8 +227,6 @@ public class FileDemo18 {
             a++;
         }
 
-        System.out.println(mat2[2][212]);
-
         char[][] symbolMapping = new char[mat2.length][mat2[0].length];
 
         for (int x = 0; x < mat2.length; x++) {
@@ -255,8 +257,6 @@ public class FileDemo18 {
 
             stepCount++;
 
-            System.out.println(x.toString());
-
             if (x.x == start.x && x.y == start.y) break;
 
             List<Day18Coordinate> getNextSteps = getNextSteps(x, mat2, symbolMapping);
@@ -264,13 +264,11 @@ public class FileDemo18 {
             for (Day18Coordinate y : getNextSteps) {
                 if (x.last.x != y.x || x.last.y != y.y) {
                     nextStack.push(y);
-                    System.out.println(y.symbol);
+                    //System.out.println(y.symbol);
                 }
                 
             }
         }
-
-        System.out.println(stepCount);
 
         long area = 0;
 
@@ -306,9 +304,78 @@ public class FileDemo18 {
 
         }
 
-        System.out.println(area);
-
         //Part 1:
         System.out.println(stepCount + area);
+
+        */
+
+        //Part 2:
+        //The Shoelace Formula Suppose the n vertices of a simple polygon in the Euclidean plane are listed in
+        //counterclockwise order as (x0, y0), . . . , (xn−1, yn−1). Then the area A of the polygon may be calculated as:
+        //A = 1/2 (x0y1 − x1y0 + . . . + xn−2yn−1 − xn−1yn−2 + xn−1y0 − x0yn−1)
+
+        long a = 0;
+        long b = 0;
+        long perimeter = 0;
+
+        List<Day18Vertex> vertexList = new ArrayList<>();
+        long minX = 0;
+        long minY = Integer.MAX_VALUE;
+
+        for (String s : stringPerLineList) {
+            String[] split1 = s.split(" ", 0);
+            String instruction = split1[2];
+
+            String distanceString = instruction.substring(2, 1+6);
+            int dir = instruction.charAt(7) - '0';
+            long dist = Long.parseLong(distanceString, 16);
+            
+            switch(dir) {
+                case 0:
+                    b += dist;
+                    break;
+                case 1:
+                    a += dist;
+                    break;
+                case 2:
+                    b -= dist;
+                    break;
+                case 3:
+                    a -= dist;
+                    break;
+
+            }
+            perimeter += dist;
+
+            minX = Math.min(minX, a);
+            minY = Math.min(minY, b);
+
+            vertexList.add(new Day18Vertex(a, b));
+        }
+
+        Collections.reverse(vertexList);
+
+        for (Day18Vertex x : vertexList) {
+            x.x -= minX;
+            x.y -= minY;
+        }
+
+        long ret = 0;
+
+        for (int m = 0; m < vertexList.size(); m++) {
+            int cur = m;
+            int next = (m + 1) % vertexList.size();
+            
+            ret += vertexList.get(cur).x * vertexList.get(next).y;
+            ret -= vertexList.get(next).x * vertexList.get(cur).y;
+            //System.out.println(ret);
+        }
+
+        ret /= 2;
+
+        System.out.println(ret);
+        //Formula for perimeter + area with Shoelace:
+        //shoelace + (perimeter / 2) + 1
+        System.out.println("Part 2: " + (ret + (perimeter/2L) + 1L));
     }
 }
