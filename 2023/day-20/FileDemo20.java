@@ -2,6 +2,13 @@ import java.io.*;
 import java.util.*;
 
 public class FileDemo20 {
+    private static long gcd (long a, long b) {
+        if (a % b == 0)
+            return b;
+        
+        return gcd(b, a % b);
+    }
+
     public static void main(String[] args) {
         File file = new File("2023/day-20/input.txt");
         List<String> stringPerLineList = new ArrayList<>();
@@ -54,15 +61,24 @@ public class FileDemo20 {
         long lowPulseCount = 0;
         long highPulseCount = 0;
 
-        int buttonCount = 0;
+        long buttonCount = 0;
 
-        while (buttonCount++ < 1000) {
+        List<Long> firstOccurrenceOfKeyModules = new ArrayList<>();
+        //dc - HIGH, rv - HIGH, vp - HIGH, cq - HIGH
+        List<String> keyModules = new ArrayList<>();
+        keyModules.add("dc");
+        keyModules.add("rv");
+        keyModules.add("vp");
+        keyModules.add("cq");
+
+        while (keyModules.size() > 0) {
+            buttonCount++;
             lowPulseCount++;
 
             Queue<Day20Signal> q = new LinkedList<>();
             
             for (String output : moduleMap.get("broadcaster").destinationList) {
-                q.offer(new Day20Signal(output, "low"));
+                q.offer(new Day20Signal("broadcaster", output, "low"));
             }
 
             while (!q.isEmpty()) {
@@ -70,6 +86,11 @@ public class FileDemo20 {
 
                 for (int i = 0; i < size; i++) {
                     Day20Signal s = q.poll();
+                    if (s.pulseType.equals("high") && keyModules.contains(s.input) && s.destination.equals("ns")) {
+                        keyModules.remove(s.input);
+                        System.out.println("first : " + s.input + " bc: " + buttonCount);
+                        firstOccurrenceOfKeyModules.add(buttonCount);
+                    }
                     Day20Module module = moduleMap.get(s.destination);
                     if (s.pulseType.equals("low")) {
                         lowPulseCount++;
@@ -81,12 +102,12 @@ public class FileDemo20 {
                     if (module.type == '%' && s.pulseType.equals("low")) {
                         if (!module.state) {
                             for (String output : module.destinationList) {
-                                q.offer(new Day20Signal(output, "high"));
+                                q.offer(new Day20Signal(module.name, output, "high"));
                             }
                         }
                         else {
                             for (String output : module.destinationList) {
-                                q.offer(new Day20Signal(output, "low"));
+                                q.offer(new Day20Signal(module.name, output, "low"));
                             }
                         }
 
@@ -105,13 +126,13 @@ public class FileDemo20 {
                         if (allHigh) {
                             module.state = false;
                             for (String output : module.destinationList) {
-                                q.offer(new Day20Signal(output, "low"));
+                                q.offer(new Day20Signal(module.name, output, "low"));
                             }
                         }
                         else {
                             module.state = true;
                             for (String output : module.destinationList) {
-                                q.offer(new Day20Signal(output, "high"));
+                                q.offer(new Day20Signal(module.name, output, "high"));
                             }
                         }
                     }
@@ -120,7 +141,14 @@ public class FileDemo20 {
             }
         }
 
-        System.out.println(lowPulseCount * highPulseCount);
-        
+        //Part 2 get LCM of first occurrence of : dc to ns - HIGH, rv to ns - HIGH, vp to ns - HIGH, cq to ns - HIGH
+        //LCM = (n1 * n2) / GCD
+        long ret = 1;
+        for (int i = 0; i < firstOccurrenceOfKeyModules.size(); i++) {
+            long x = firstOccurrenceOfKeyModules.get(i);
+            ret = ret * x / gcd(ret, x);
+        }
+
+        System.out.println(ret);
     }
 }
