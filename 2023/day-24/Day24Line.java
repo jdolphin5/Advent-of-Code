@@ -1,12 +1,12 @@
 public class Day24Line {
-    double px;
-    double py;
-    double pz;
-    double vx;
-    double vy;
-    double vz;
+    long px;
+    long py;
+    long pz;
+    long vx;
+    long vy;
+    long vz;
 
-    public Day24Line(double px, double py, double pz, double vx, double vy, double vz) {
+    public Day24Line(long px, long py, long pz, long vx, long vy, long vz) {
         this.px = px;
         this.py = py;
         this.pz = pz;

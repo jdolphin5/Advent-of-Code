@@ -24,6 +24,8 @@ public class FileDemo24 {
             lineList.add(new Day24Line(Long.parseLong(positions[0]), Long.parseLong(positions[1]), Long.parseLong(positions[2]), Long.parseLong(velocities[0]), Long.parseLong(velocities[1]), Long.parseLong(velocities[2])));
         }
 
+        /*
+
         final double TEST_AREA_MIN = 200000000000000.0;
         final double TEST_AREA_MAX = 400000000000000.0;
 
@@ -109,5 +111,63 @@ public class FileDemo24 {
 
         System.out.println(ret);
 
+        */
+
+        Day24Line h1 = lineList.get(0);
+        Day24Line h2 = lineList.get(2);
+ 
+        int range = 500;
+        for (int vx = -range; vx <= range; vx++) {
+            for (int vy = -range; vy <= range; vy++) {
+                for (int vz = -range; vz <= range; vz++) {
+ 
+                    if (vx == 0 || vy == 0 || vz == 0) {
+                        continue;
+                    }
+ 
+                    long A = h1.px, a = h1.vx - vx;
+                    long B = h1.py, b = h1.vy - vy;
+                    long C = h2.px, c = h2.vx - vx;
+                    long D = h2.py, d = h2.vy - vy;
+
+                    if (c == 0 || (a * d) - (b * c) == 0) {
+                        continue;
+                    }
+ 
+                    long t = (d * (C - A) - c * (D - B)) / ((a * d) - (b * c));
+ 
+                    long x = h1.px + h1.vx * t - vx * t;
+                    long y = h1.py + h1.vy * t - vy * t;
+                    long z = h1.pz + h1.vz * t - vz * t;
+ 
+                    boolean success = true;
+                    for (int i = 0; i < lineList.size(); i++) {
+ 
+                        Day24Line h = lineList.get(i);
+                        long u;
+                        if (h.vx != vx) {
+                            u = (x - h.px) / (h.vx - vx);
+                        } else if (h.vy != vy) {
+                            u = (y - h.py) / (h.vy - vy);
+                        } else if (h.vz != vz) {
+                            u = (z - h.pz) / (h.vz - vz);
+                        } else {
+                            throw new RuntimeException(); //throw exception if u is not initialised
+                        }
+ 
+                        if ((x + u * vx != h.px + u * h.vx) || (y + u * vy != h.py + u * h.vy) || ( z + u * vz != h.pz + u * h.vz)) {
+                            success = false;
+                            break;
+                        }
+                    }
+ 
+                    if (success) {
+                        System.out.println(x + y + z);
+                    }
+                }
+            }
+        }
+
+        System.out.println("fin");
     }
 }
