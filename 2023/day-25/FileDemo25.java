@@ -3,6 +3,8 @@ import java.util.*;
 
 public class FileDemo25 {
 
+    //Bellman-Ford algorithm for computing the shortest paths from:
+    //https://www.geeksforgeeks.org/shortest-path-unweighted-graph/
     private static boolean BFS(List<Integer>[] adj, int src,
     int dest, int v, int[] pred, int[] dist)
         {
@@ -65,22 +67,12 @@ public class FileDemo25 {
             System.out.println(e.toString());
         }
 
-        /*
-         * 
-         * This is a ... silly ... solution. I use a Monte Carlo approach: keep a counter for every edge,
-         * initialized to 0. Repeatedly select 2 vertices randomly. Find the shortest path between them,
-         * increase the used edges' counter by 1.
-         * Remove the 3 edges with the highest counter.
-         * Rationale: if the resulting components are somewhat similarly-sized, the 3 connecting bridges
-         * should see the most traffic.
-         * In my input, this works very well. Even with only 100 repeats, it most often finds the solution,
-         * with 1000 pretty much every time.
-         */
-
-        //Part 1
         //Union find brute force is too heavy
         //Try Monte Carlo approach: randomly choose two vertices and find the shortest path between them
-        //increment the traffic counter of each node every time it is visited
+        //Increment the traffic counter of each edge every time it is visited
+        //Remove the most common 3 edges (2 * 3 = 6 total)
+        //Unionfind the remaining nodes to find the count of each of the 2 final groups
+        //Multiply the result
 
         Map<String, Integer> componentNumberMap = new HashMap<>();
         List<List<String>> connectedList = new ArrayList<>();
@@ -125,10 +117,9 @@ public class FileDemo25 {
             graph[connectedNumTwo].add(connectedNumOne);
         }
 
-        final int NUM_OF_RANDOM_PAIRS = 10000;
+        final int NUM_OF_RANDOM_PAIRS = 100;
 
         for (int i = 0; i < NUM_OF_RANDOM_PAIRS; i++) {
-            System.out.println(i);
             Random rand = new Random();
             int randomInt1 = rand.nextInt(componentNumber);
             int randomInt2 = rand.nextInt(componentNumber);
@@ -139,8 +130,7 @@ public class FileDemo25 {
             int dist[] = new int[componentNumber];
 
             if (BFS(graph, randomInt1, randomInt2, componentNumber, pred, dist) == false) {
-                System.out.println("Given source and destination" + 
-                                            "are not connected");
+                System.out.println("Given source and destination" + "are not connected");
             }
 
             // LinkedList to store path
@@ -158,16 +148,14 @@ public class FileDemo25 {
                 last = cur;
             }
     
-            // Print distance
-            System.out.println("Shortest path length is: " + dist[randomInt2]);
-    
             // Print path
-            System.out.println("Path is ::");
+            System.out.println("\nPath is ::");
             for (int x = path.size() - 1; x >= 0; x--) {
                 System.out.print(path.get(x) + " ");
             }
         }
 
+        //Remove the 3 most common edges (both directions for each)
         for (int x = 0; x < 6; x++) {
             int max = 0;
             String toRemove = "";
@@ -187,7 +175,6 @@ public class FileDemo25 {
             int b = Integer.parseInt(splitString[1]);
             graph[a].remove(Integer.valueOf(b));
             graph[b].remove(Integer.valueOf(a));
-            System.out.println(graph[a].toString());
             edgeMap.remove(toRemove);
         }
 
@@ -205,8 +192,10 @@ public class FileDemo25 {
             groupSizeMap.put(uf.find(i), groupSizeMap.getOrDefault(uf.find(i), 0) + 1);
         }
 
+        int p = 0;
+
         for (Map.Entry<Integer, Integer> entry : groupSizeMap.entrySet()) {
-            System.out.println(entry.getValue());
+            System.out.println("group " + p + " size: " + entry.getValue());
         }
     }
 }
