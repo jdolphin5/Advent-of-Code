@@ -195,7 +195,7 @@ public class FileDemo25 {
         int p = 0;
 
         for (Map.Entry<Integer, Integer> entry : groupSizeMap.entrySet()) {
-            System.out.println("group " + p + " size: " + entry.getValue());
+            System.out.println("group " + (p++) + " size: " + entry.getValue());
         }
     }
 }
